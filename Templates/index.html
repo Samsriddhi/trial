@@ -1,4 +1,3 @@
-User
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,12 +5,12 @@ User
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZenFlo</title>
     <style>
-        body {  
-            background-size: cover; 
-            background-repeat: no-repeat;   
-            background-color:  #6C7153;  
+        body {
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-color: #6C7153;
         }
-        
+
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -64,92 +63,44 @@ User
         </div>
     </div>
 
-     <!-- Your HTML remains the same -->
-
-     <script>
-        async function fetchData(endpoint, requestData) {
-    try {
-        const apiKey = 'e88a6209068a430a8cba0fede006b220';  // Replace with your actual Azure OpenAI API key
-        const baseUrl = 'https://imaginemvp-zenflo.openai.azure.com';  // Remove the trailing slash
-        const version = '2023-07-01-preview';  // Replace with the desired API version
-        const type = 'openai';  // Replace with the desired model type
-
-        const url = `${baseUrl}/${version}/deployments/${endpoint}`;
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiKey
-            },
-            body: JSON.stringify(requestData)
-        });
-
-        return response.json();
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        return { error: 'Error fetching data' };
-    }
-}
-    
-        async function getAsana() {
+    <script>
+        function getAsana() {
             const symptoms = document.getElementById('symptoms').value;
             const userPrompt = symptoms;
-            const result = await chatCompletion(userPrompt);
+            const result = chatCompletion(userPrompt);
             document.getElementById('asanaResult').innerText = result.asana || result.error || 'No result';
         }
-    
-        async function getStudio() {
+
+        function getStudio() {
             const location = document.getElementById('location').value;
             const userPrompt = location;
-            const result = await chatCompletion(userPrompt);
+            const result = chatCompletion(userPrompt);
             document.getElementById('studioResult').innerText = result.studio || result.error || 'No result';
         }
-    
-        
 
-async function chatCompletion(prompt) {
-    try {
-        const apiKey = 'e88a6209068a430a8cba0fede006b220';  // Replace with your actual Azure OpenAI API key
-        const baseUrl = 'https://imaginemvp-zenflo.openai.azure.com';  // Remove the trailing slash
-        const version = '2023-07-01-preview';  // Replace with the desired API version
-        const endpoint = 'Trial/chat/completions'; // Replace with the correct endpoint for chat completion
+        async function chatCompletion(prompt) {
+            try {
+                openai.api_key = 'e88a6209068a430a8cba0fede006b220';
+                openai.api_base = 'https://imaginemvp-zenflo.openai.azure.com';
+                openai.api_type = 'azure';
+                openai.api_version = '2023-07-01-preview';
 
-        const url = `${baseUrl}/${version}/deployments/${endpoint}?api-version=${version}`;
+                const response = await openai.Completion.create({
+                    engine: 'Trial',
+                    prompt: prompt,
+                    max_tokens: 800,
+                    temperature: 0.7,
+                    top_p: 0.95,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                });
 
-        const requestData = {
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are an AI assistant that helps people find information.',
-                },
-                {
-                    role: 'user',
-                    content: prompt,
-                },
-            ],
-            temperature: 0.7,
-            top_p: 0.95,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            max_tokens: 800,
-            stop: null,
-        };
-
-        const response = await fetchData(url, requestData);
-
-        if (response.choices && response.choices.length > 0) {
-            const asana = response.choices[0].text.trim();
-            return { asana: asana };
-        } else {
-            return { error: 'No valid response from the OpenAI API' };
+                return { asana: response.data.choices[0].text.trim() };
+            } catch (error) {
+                console.error('Error with chat completion:', error);
+                return { error: 'Error with chat completion' };
+            }
         }
-    } catch (error) {
-        console.error('Error with chat completion:', error);
-        return { error: 'Error with chat completion' };
-    }
-}
     </script>
-
 </body>
 </html>
