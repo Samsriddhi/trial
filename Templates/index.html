@@ -45,7 +45,12 @@
             font-weight: bold;
         }
     </style>
-    <script src="https://cdn.openai.com/v0.26.2/openai.min.js"></script>
+    <script>
+        import OpenAI from "https://deno.land/x/openai@v4.26.1/mod.ts";
+
+        const client = new OpenAI();
+        const openai = require('openai');
+    </script>
 </head>
 <body>
     <div class="container">
