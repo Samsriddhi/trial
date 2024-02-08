@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenFlo</title>
+    <style>
+        body {
+              
+            background-size: cover; 
+            background-repeat: no-repeat;   
+            background-color: #6C7153;  
+            
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 8px 20px;
+            background-color:transparent;
+            color:black;
+            border: black;
+            cursor: pointer;
+            font-family: 'Times New Roman';
+            background-color: #edac6f;
+        }
+
+        button:hover {
+            background-color: transparent;
+            color: black;
+            border: black;
+        }
+
+        #asanaResult, #studioResult {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: #f7d86f;">ZenFlo</h1>
+        <div>
+            <label for="symptoms" style="color: #f7d86f;">Enter Symptoms:</label>
+            <input type="text" id="symptoms" placeholder="Enter symptoms...">
+            <button onclick="getAsana()">Get Asana</button>
+            <div id="asanaResult"></div>
+        </div>
+        <div>
+            <label for="location" style="color: #f7d86f;">Enter Location:</label>
+            <input type="text" id="location" placeholder="Enter location...">
+            <button onclick="getStudio()">Find Nearest Studio</button>
+            <div id="studioResult"></div>
+        </div>
+    </div>
+
+    <script>
+        async function getAsana() {
+            const symptoms = document.getElementById('symptoms').value;
+            const response = await fetch("/get_asana", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({symptoms: symptoms})
+            });
+            const data = await response.json();
+            document.getElementById('asanaResult').innerText = data.asana;
+        }
+    
+        async function getStudio() {
+            const location = document.getElementById('location').value;
+            const response = await fetch("/find_studio", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({location: location})
+            });
+            const data = await response.json();
+            document.getElementById('studioResult').innerText = data.location;
+        }
+    </script>
+</body>
+</html>
