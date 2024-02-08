@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+gunicorn
+jinja2
+aiofiles
+openai==0.28
+numpy
+pandas
+pillow
+opencv-python
