@@ -45,12 +45,6 @@
             font-weight: bold;
         }
     </style>
-    <script>
-        import OpenAI from "https://deno.land/x/openai@v4.26.1/mod.ts";
-
-        const client = new OpenAI();
-        const openai = require('openai');
-    </script>
 </head>
 <body>
     <div class="container">
@@ -69,36 +63,39 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/openai/dist/openai.browser.js"></script>
     <script>
-        function getAsana() {
+        const openai = new OpenAI({
+            apiKey: 'e88a6209068a430a8cba0fede006b220',
+            apiBase: 'https://imaginemvp-zenflo.openai.azure.com',
+            apiType: 'azure',
+            apiVersion: '2023-07-01-preview'
+        });
+
+        async function getAsana() {
             const symptoms = document.getElementById('symptoms').value;
             const userPrompt = symptoms;
-            const result = chatCompletion(userPrompt);
+            const result = await chatCompletion(userPrompt);
             document.getElementById('asanaResult').innerText = result.asana || result.error || 'No result';
         }
 
-        function getStudio() {
+        async function getStudio() {
             const location = document.getElementById('location').value;
             const userPrompt = location;
-            const result = chatCompletion(userPrompt);
+            const result = await chatCompletion(userPrompt);
             document.getElementById('studioResult').innerText = result.studio || result.error || 'No result';
         }
 
         async function chatCompletion(prompt) {
             try {
-                openai.api_key = 'xxx;
-                openai.api_base = 'https://imaginemvp-zenflo.openai.azure.com';
-                openai.api_type = 'azure';
-                openai.api_version = '2023-07-01-preview';
-
                 const response = await openai.Completion.create({
                     engine: 'Trial',
                     prompt: prompt,
-                    max_tokens: 800,
+                    maxTokens: 800,
                     temperature: 0.7,
-                    top_p: 0.95,
-                    frequency_penalty: 0,
-                    presence_penalty: 0,
+                    topP: 0.95,
+                    frequencyPenalty: 0,
+                    presencePenalty: 0,
                 });
 
                 return { asana: response.data.choices[0].text.trim() };
